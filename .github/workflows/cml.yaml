@@ -16,7 +16,7 @@ jobs:
         run: |
           
           python3 -m venv .
-          source ./bin/activate
+          source bin/activate
           pip install -r requirements.txt
           python give-me-the-odds.py millennium-falcon.json examples/example1/empire.json
           python give-me-the-odds.py millennium-falcon.json examples/example2/empire.json

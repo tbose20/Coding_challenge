@@ -8,7 +8,7 @@
 ## Setp 3: Run backend
     python server.py
     
-    Upload a json file with the plans of the Empire in the user interface. Submit query.
+##    Upload a json file with the plans of the Empire in the user interface. Submit query.
 
 ## For running the CLI:
 

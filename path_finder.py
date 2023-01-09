@@ -3,6 +3,11 @@ class Graph:
         self.adj_list = adj_list
 
     def find_neigh(self, n):
+        """
+        Finds the neighbors of the current node
+        :n: (string) the current node
+        :return: (list having strings) list of neighbors for the current node 
+        """
 
         if n in self.adj_list:
             return self.adj_list[n]
@@ -20,6 +25,11 @@ class Graph:
         return H[n]
 
     def astar_algo(self, start, stop):
+        """
+        A* algorithm
+        :start: (string) starting node
+        :stop: the ending node
+        """
 
         if start == stop:
             return [start]
@@ -110,10 +120,19 @@ class Graph:
         return days, day_list
 
 
-# TODO: pass the types of all variables
 def travel_time_main(exponent, prob_cap, autonomy, current_days, level_of_fuel, remaining_path, remaining_path_days, hunt_plan, countdown):
     """
-    current_days: includes the days required to reach the current node + waiting time at the current_node + refuel_time at the current node
+    Traverses the given path and sums up the probability of capture
+    :exponent: (integer) the exponent in the formula for computing the probability of capture; it keeps updating - starts from 0
+    :prob_cap: (float) probability of capture
+    :autonomy: (integer) the autonomy of the Millennium Falcon
+    :current_days: (integer) number of days required to reach the current planet + refuel time in the current planet + number of waiting days in the current planet
+    :level_of_fuel: (integer) the level of fuel remaining
+    :remaining_path: (list having strings) the remaining part of the current path that is left to traverse
+    :remaining_path_days: (list having integers) the numbe of days required to traverse the remaining part of the current path that is left to traverse
+    :hunt_plan: (dictionary): plan of the bounty hunters, where each entry is planet: list of days present in the planet
+    :countdown: (integer) Empire's countdown for reaching the destination
+    :return: days_to_reach: (integer) Days to reach the destination using the given path, prob_cap: (float) probability of capture when following the current path
     """
     assert len(
         remaining_path) >= 2, "Length of remaining path cannot be less that 2"
@@ -193,7 +212,15 @@ def travel_time_main(exponent, prob_cap, autonomy, current_days, level_of_fuel, 
 
 def travel_time(prob_cap, autonomy, current_days, level_of_fuel, remaining_path, remaining_path_days, hunt_plan, countdown):
     """
-    current_days: includes the days required to reach the current node + waiting time at the current_node + refuel_time at the current node
+    Used during recursion while computing the maximum possible waiting time after traversing the given path
+    :autonomy: (integer) the autonomy of the Millennium Falcon
+    :current_days: (integer) number of days required to reach the current planet + refuel time in the current planet + number of waiting days in the current planet
+    :level_of_fuel: (integer) the level of fuel remaining
+    :remaining_path: (list having strings) the remaining part of the current path that is left to traverse
+    :remaining_path_days: (list having integers) the numbe of days required to traverse the remaining part of the current path that is left to traverse
+    :hunt_plan: (dictionary): plan of the bounty hunters, where each entry is planet: list of days present in the planet
+    :countdown: (integer) Empire's countdown for reaching the destination
+    :return: days_to_reach: (integer) Days to reach the destination using the given path
     """
     assert len(
         remaining_path) >= 2, "Length of remaining path cannot be less that 2"
@@ -242,7 +269,16 @@ def travel_time(prob_cap, autonomy, current_days, level_of_fuel, remaining_path,
 
 def waiting_time(prob_cap, autonomy, day_spent, level_of_fuel, remaining_path, remaining_path_days, hunt_plan, countdown):
     """
-    day_spent: includes only the days required to reach the current node ( does not include waiting time at the current_node + refuel_time at the current node)
+    Computes the waiting time at the current planet 
+    :prob_cap: (float) probability of capture
+    :autonomy: (integer) the autonomy of the Millennium Falcon
+    :days_spent: (integer) number of days required to reach the current planet (does not include waiting time at the current_node + refuel_time at the current node)
+    :level_of_fuel: (integer) the level of fuel remaining
+    :remaining_path: (list having strings) the remaining part of the current path that is left to traverse
+    :remaining_path_days: (list having integers) the numbe of days required to traverse the remaining part of the current path that is left to traverse
+    :hunt_plan: (dictionary): plan of the bounty hunters, where each entry is planet: list of days present in the planet
+    :countdown: (integer) Empire's countdown for reaching the destination
+    :return: WT_tentative: (integer) waiting time at the current planet, flag_cant_reach: (bool) if True, the flag to indicate that the destination cannot be reached  with the current path before countdown
     """
 
     flag_cant_reach = False
@@ -297,7 +333,7 @@ def waiting_time(prob_cap, autonomy, day_spent, level_of_fuel, remaining_path, r
                 #    days_for_next_hunt = min(
                 #        days_of_hunt_current) - (day_spent+refuel_time)
 
-                # No use waiting if the current node has an
+                # No use waiting if the current node has a bounty hunter on the next day after refueling
                 WT_permit = min(days_of_hunt_current) - \
                     (day_spent+refuel_time)
 
@@ -334,6 +370,15 @@ def waiting_time(prob_cap, autonomy, day_spent, level_of_fuel, remaining_path, r
 
 
 def total_time(autonomy, path, path_days, hunt_plan, countdown):
+    """
+    Calls travel_time_main to compute the days_to_reach and prob_cap for the current path
+    :autonomy: (integer) the autonomy of the Millennium Falcon
+    :path: (list having strings) the current path 
+    :path_days: (list having integers) the number of days required to traverse the current path
+    :hunt_plan: (dictionary): plan of the bounty hunters, where each entry is planet: list of days present in the planet
+    :countdown: (integer) Empire's countdown for reaching the destination
+    :return: days_to_reach: (integer) Days to reach the destination using the given path, prob_cap: (float) probability of capture when following the current path
+    """
     level_of_fuel = autonomy
     day_spent = 0
     refuel_time = 0
@@ -402,6 +447,14 @@ def total_time(autonomy, path, path_days, hunt_plan, countdown):
 
 
 def compute_probability(autonomy, graph_1, empire_plan, path):
+    """
+    Computes the probability of success for the current path
+    :autonomy: (integer) the autonomy of the Millennium Falcon
+    :graph_1: object of Graph
+    :empire_plan: (dictionary) dictionary containing the empire plan
+    :path: (list having strings) the current path
+    :return: prob_success: (float) probability of success in the current path
+    """
 
     days, day_list = graph_1.find_days(path)
 
@@ -435,6 +488,17 @@ def compute_probability(autonomy, graph_1, empire_plan, path):
 
 
 def compute_prob_subgraph(graph_1, neigh_done, path_upto_start, start, empire_plan, millenium_data, prob):
+    """
+    Traverses different routes in the graph starting from all the neighbors of the planet 'start' through recursion and updates the probability of success 
+    :graph_1: object of Graph
+    :neigh_done: (string) neighbor that has been visited
+    :path upto start: (list having strings): part of the route taken until the planet 'start'
+    :start: (string): the planet whose neighbors are traversed
+    :empire_plan: (dictionary): dictionary containing the data from the json file of empire plan
+    :millenium_data: (dictionary): dictionary containing the data from the json file for the Millenium Falcon
+    :prob: (float): best probability of success till now
+    :return: prob: (float) updated probability of success after traversing different routes
+    """
 
     neighbors = graph_1.find_neigh(start)
 
@@ -494,7 +558,11 @@ def compute_prob_subgraph(graph_1, neigh_done, path_upto_start, start, empire_pl
 
 def finding_path(db_table, millenium_data, empire_plan):
     """
-       Constructs an adjacency graph from the database table and calls the A* algorithm
+    Constructs an adjacency graph from the database table, calls the A * algorithm and searches different possible routes through recursion
+    :db_table: (list) the entries of the database table of the Millenium Falcon
+    :millenium_data: (dictionary) data extracted from the json file for the Millenium Falcon
+    :empire_plan: (dictionary) dictionary containing the data from the json file of empire plan
+    return:prob: (float) Final probability of success
     """
     adjac_lis = {}
     for (source, dest, days) in db_table:

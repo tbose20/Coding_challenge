@@ -568,7 +568,6 @@ def finding_path(db_table, millenium_data, empire_plan):
     return:prob: (float) Final probability of success
     """
     adjac_lis = {}
-    print("db_table: ", db_table)
     for (source, dest, days) in db_table:
 
         if not source or not dest:

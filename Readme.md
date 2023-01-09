@@ -12,8 +12,8 @@
 
 ## For running the CLI:
 
-    python give-me-the-odds.py millennium-falcon.json <path to empire.json>
+    dist/give-me-the-odds millennium-falcon.json <path to empire.json>
 
     For example:
-    python give-me-the-odds.py millennium-falcon.json examples/example1/empire.json
+    dist/give-me-the-odds millennium-falcon.json examples/example1/empire.json
 

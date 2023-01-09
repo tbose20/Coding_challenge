@@ -340,6 +340,9 @@ def waiting_time(prob_cap, autonomy, day_spent, level_of_fuel, remaining_path, r
         WT_tentative = last_day - \
             (day_spent + refuel_time +
              remaining_path_days[1]) + 1  # maximum waiting time
+        if WT_tentative < 0:  # the next planet will not have a hunter after reaching the planet
+            WT_tentative = 0
+            return WT_tentative, flag_cant_reach
         WT_tentative = min(WT_tentative, WT_permit)
 
     current_days = day_spent + refuel_time + WT_tentative

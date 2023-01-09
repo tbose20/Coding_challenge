@@ -53,7 +53,7 @@ def cli():
     empire = args.json_file2
 
     if not millenium_falcon.endswith(".json"):
-        print("The millenium_falcon file is not a json file: ")
+        print("The millenium_falcon file is not a json file. ")
         return None
 
     if not empire.endswith(".json"):
@@ -157,7 +157,7 @@ def cli():
                             else:
                                 if len(entry) != 2:
                                     print(
-                                        "The uploaded file is not correctly formatted: an entry for the empire's plan has more than 2 items in the dictionary")
+                                        "The uploaded file is not correctly formatted: an entry for the empire's plan has more or less than 2 items in the dictionary")
                                     return None
                                 keys_entry = entry.keys()
                                 if "planet" not in keys_entry:
@@ -166,7 +166,11 @@ def cli():
                                     return None
                                 else:
                                     val_entry = entry["planet"]
-                                    if not isinstance(val_entry, str):
+                                    if not val_entry:
+                                        print(
+                                            "The field planet in the uploaded file is empty")
+                                        return None
+                                    elif not isinstance(val_entry, str):
                                         print(
                                             "The field planet in the uploaded file is not a string")
                                         return None

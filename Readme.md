@@ -1,6 +1,7 @@
-## Step 1: Virtual environment
-    python3 -m venv .
+## Step 1: Virtual environment 
+    python -m venv .
     source ./bin/activate
+    install Python 3.8.5
 
 ## Step 2: Install all the python dependencies
     pip install -r requirements.txt

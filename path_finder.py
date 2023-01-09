@@ -123,7 +123,7 @@ class Graph:
 def travel_time_main(exponent, prob_cap, autonomy, current_days, level_of_fuel, remaining_path, remaining_path_days, hunt_plan, countdown):
     """
     Traverses the given path and sums up the probability of capture
-    :exponent: (integer) the exponent in the formula for computing the probability of capture; it keeps updating - starts from 0
+    :exponent: (integer) the exponent or k in the formula for computing the probability of capture; it keeps updating - starts from 0
     :prob_cap: (float) probability of capture
     :autonomy: (integer) the autonomy of the Millennium Falcon
     :current_days: (integer) number of days required to reach the current planet + refuel time in the current planet + number of waiting days in the current planet
@@ -568,7 +568,13 @@ def finding_path(db_table, millenium_data, empire_plan):
     return:prob: (float) Final probability of success
     """
     adjac_lis = {}
+    print("db_table: ", db_table)
     for (source, dest, days) in db_table:
+
+        if not source or not dest:
+            print(
+                "Either source or destination is empty: correct the millenium_falcon database")
+            return None
 
         if not isinstance(days, int):
             print(
@@ -606,8 +612,7 @@ def finding_path(db_table, millenium_data, empire_plan):
     graph_1 = Graph(adjac_lis)
     path = graph_1.astar_algo(
         millenium_data['departure'], millenium_data['arrival'])
-    # path = ["Tatooine", "Dagobah", "Hoth", "Endor"]
-    # path = ["Tatooine", "Hoth", "Endor"]
+
     if not path:
         print("Path does not exist")
         return 0
@@ -616,35 +621,5 @@ def finding_path(db_table, millenium_data, empire_plan):
 
     prob = compute_prob_subgraph(graph_1, path[1], [
                                  millenium_data['departure']], millenium_data['departure'], empire_plan, millenium_data, prob)
-
-    # for path_ind in range(1):
-    #     neighbors = graph_1.find_neigh(path[path_ind])
-
-    #     neighbors.sort(key=lambda a: a[1])
-
-    #     print("Traversing other neighbors")
-
-    #     for (neigh, weight) in neighbors:
-    #         #  if path_ind == 0 and neigh != path[path_ind+1]:
-    #         if neigh != path[1]:
-    #             # Find the shortest path for the next closest neighbor
-    #             path_new = graph_1.a_star_algorithm(
-    #                 neigh, millenium_data['arrival'])
-    #             path_neigh = []
-    #             path_neigh.extend(path[:path_ind+1])
-    #             path_neigh.extend(path_new)
-    #             prob_neigh = compute_probability(
-    #                 millenium_data['autonomy'], graph_1, empire_plan, path_neigh)
-
-    #             print("new path: ", path_neigh, " prob_neigh: ", prob_neigh)
-
-    #             if prob_neigh > prob:
-    #                 print("path_neigh: ", path_neigh,
-    #                       " prob_neigh", prob_neigh)
-    #                 prob = prob_neigh
-    #             if prob == 100:
-    #                 break
-    #     if prob == 100:
-    #         break
 
     return prob

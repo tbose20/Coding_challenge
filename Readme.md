@@ -1,6 +1,6 @@
 ## Step 1: Virtual environment
     python3 -m venv .
-    source bin/activate
+    source ./bin/activate
 
 ## Step 2: Install all the python dependencies
     pip install -r requirements.txt

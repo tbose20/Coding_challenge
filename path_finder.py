@@ -522,6 +522,7 @@ def compute_prob_subgraph(graph_1, neigh_done, path_upto_start, start, empire_pl
         #    prev_nodes = path_upto_start[-1]
 
         if neigh != start and neigh not in path_upto_start:
+#        if neigh != start:
 
             path_new = graph_1.astar_algo(
                 neigh, millenium_data['arrival'])
@@ -531,12 +532,14 @@ def compute_prob_subgraph(graph_1, neigh_done, path_upto_start, start, empire_pl
             path_neigh.extend(path_new)
 
             path_neigh_days, _ = graph_1.find_days(path_neigh)
-            if path_neigh or path_neigh_days <= empire_plan["countdown"]:
+            if path_neigh and path_neigh_days <= empire_plan["countdown"]:
 
                 prob_neigh = compute_probability(
                     millenium_data['autonomy'], graph_1, empire_plan, path_neigh)
             else:
                 prob_neigh = 0
+                
+                
 
             if prob_neigh > prob:
 

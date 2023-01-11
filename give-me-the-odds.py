@@ -65,10 +65,10 @@ def cli():
             with open(millenium_falcon) as jsonFile:
                 millenium_data = json.load(jsonFile)
                 ####### Checking the fields #########
-                if not isinstance(millenium_data, dict):
-                    print(
-                        "The json file for millenium_falcon is not correctly formatted")
-                    return None
+      #          if not isinstance(millenium_data, dict):
+      #              print(
+      #                  "The json file for millenium_falcon is not correctly formatted")
+      #              return None
                 keys = millenium_data.keys()
                 if "autonomy" not in keys:
                     print(

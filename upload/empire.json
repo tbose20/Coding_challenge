@@ -1,9 +1,9 @@
 {
-  "countdown": 7,
+  "countdown": 10,
   "bounty_hunters": [
     {
       "planet": "Hoth",
-      "day": "hj"
+      "day": 6
     },
     {
       "planet": "Hoth",

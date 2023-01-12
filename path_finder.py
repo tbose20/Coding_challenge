@@ -442,7 +442,7 @@ def total_time(autonomy, path, path_days, hunt_plan, countdown):
             days_to_reach, prob_cap = travel_time_main(exponent, prob_cap, autonomy,
                                                        current_days, level_of_fuel, path, path_days, hunt_plan, countdown)
     else:
-        # print(f"Wait at {path[0]} for {WT_tentative} days") # print to uncomment when checking the path
+        
         days_to_reach, prob_cap = travel_time_main(exponent, prob_cap, autonomy,
                                                    current_days, level_of_fuel, path, path_days, hunt_plan, countdown)  # Traverse the path again with the 'travel_time_main' to compute the actual probability of capture
 
@@ -521,8 +521,16 @@ def compute_prob_subgraph(graph_1, neigh_done, path_upto_start, start, empire_pl
         # else:
         #    prev_nodes = path_upto_start[-1]
 
-        if neigh != start and neigh not in path_upto_start:
+        flag_count_neigh = False
+        if neigh in path_upto_start:
+            count_neigh = path_upto_start.count(neigh)
+            if count_neigh > 1:
+                flag_count_neigh = True
+
+
+#        if neigh != start and neigh!= neigh_done and neigh not in path_upto_start:
 #        if neigh != start:
+        if neigh != start and neigh!= neigh_done and flag_count_neigh == False: 
 
             path_new = graph_1.astar_algo(
                 neigh, millenium_data['arrival'])
@@ -547,11 +555,25 @@ def compute_prob_subgraph(graph_1, neigh_done, path_upto_start, start, empire_pl
                 if prob == 100:
                     break
 
+            ############## Finding paths with cycles and all paths where the same loop gets repeated depending on the countdown #######
+            list_cycle_path = find_cycles(path_neigh, empire_plan, graph_1)
+            for path_cyc in list_cycle_path:
+                prob_cyc = compute_probability(
+                    millenium_data['autonomy'], graph_1, empire_plan, path_cyc)
+                if prob_cyc > prob:
+                    prob = prob_cyc
+                    if prob == 100:
+                        break
+            if prob == 100:
+                 break
+            ##########################################################################################################
+
+
             if neigh == millenium_data['arrival']:
                 prob_neigh = prob
             else:
                 prob_neigh = compute_prob_subgraph(
-                    graph_1, path_neigh[1], path_upto_start+[neigh], neigh, empire_plan, millenium_data, prob)  # compute_prob_recursively for the next neighbor
+                    graph_1, path_new[1], path_upto_start+[neigh], neigh, empire_plan, millenium_data, prob)  # compute_prob_recursively for the next neighbor
 
             if prob_neigh > prob:
 
@@ -560,6 +582,34 @@ def compute_prob_subgraph(graph_1, neigh_done, path_upto_start, start, empire_pl
                     break
 
     return prob
+
+def find_cycles(path, empire_plan, graph_1):
+    """
+    Repeats any loop that occurs in the path to get new path as long as the total number of days required to traverse the path is less than or equal to countdown
+    :path: (list) the path considered
+    :empire_plan: (dictionary) dictionary containing the data from the json file of empire plan
+    :graph_1: object of Graph
+    return: list_cycle_path: (list having list of strings) list of new paths
+    """
+    list_cycle_path = []
+    new_path = path
+    num_of_days, _ = graph_1.find_days(new_path)
+    list_ind_done = []
+    for (ind,ele) in enumerate(path):
+        if path.count(ele) > 1 and ind not in list_ind_done:
+            ind_start = ind
+            ind_end = ind+path[ind+1:].index(ele)+1
+            list_ind_done.append(ind_start)
+            list_ind_done.append(ind_end)
+
+            rep = 2
+
+            while num_of_days <= empire_plan["countdown"]:
+                list_cycle_path.append[new_path]
+                new_path = path[:ind_start] + path[ind_start:ind_end+1]+ path[ind_start+1:ind_end+1]*(rep-1) + path[ind_end+1:]
+                num_of_days, _ = graph_1.find_days(new_path)
+                rep+=1
+    return list_cycle_path
 
 
 def finding_path(db_table, millenium_data, empire_plan):
